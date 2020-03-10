@@ -18,10 +18,9 @@ namespace Test
         public static void Main(string[] args)
         {
             Commands = new Dictionary<string, MyEventHandler>();
-            _log = new Dictionary<long, LogEntry>();
-            RegisterCommand("Wow", Testing);
+            _log = new Dictionary<long, LogEntry>(); 
             RegisterCommand("Send", Send);
-            RegisterCommand("View", View);
+            RegisterCommand("View", View); 
             string sid = "";
             while (string.IsNullOrEmpty(sid) || !int.TryParse(sid, out DOCTOR_ID))
             {
@@ -84,10 +83,16 @@ namespace Test
 
         private static void View(string[] args)
         {
-            int id;
-            if (int.TryParse(args[1], out id))
+            long id;
+            if (long.TryParse(args[1], out id))
             {
-                Console.WriteLine(JsonConvert.SerializeObject(_log[id], Formatting.Indented));
+                var entry = _log[id];
+                JsonConvert.SerializeObject(entry);
+                var view = new LogEntryViewedMessage();
+                view.DateViewed = DateTime.Now;
+                view.LogId = entry.logId;
+                view.EntryId = entry.entryId;
+                Send(202, JsonConvert.SerializeObject(view));
             }
         }
 
@@ -103,7 +108,7 @@ namespace Test
         { 
             string queue = "USER-ID:" + id + "-QUEUE";
             var t = Channel.CreateBasicProperties();
-            t.Type = "RANDOM_MESSAGE";
+            t.Type = "DOCTOR_VIEWED_ENTRY";
             t.Headers = new Dictionary<string, object>
             {
                 {"TEST","TESTING"}
@@ -121,17 +126,7 @@ namespace Test
         {
             Console.WriteLine("Registering Command: {0}", command.ToLower());
             Commands.Add(command.ToLower(), handler);
-        }
-
-        private static void Testing(string[] args)
-        {
-            Console.Write("Wow, the command triggered ");
-            foreach (var arg in args)
-            {
-                Console.Write(arg);
-            }
-            Console.Write("\n");
-        }
+        } 
         
         private static void RunCommand(string command, params string[] args)
         {
@@ -144,6 +139,13 @@ namespace Test
                 Console.WriteLine("No event found with command: {0}",command);
             }
         }
+    }
+
+    internal class LogEntryViewedMessage
+    {
+        public long EntryId;
+        public long LogId;
+        public DateTime DateViewed;
     }
 
     internal class LogEntry
