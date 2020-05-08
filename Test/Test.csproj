@@ -64,9 +64,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DoctorRequest.cs" />
+    <Compile Include="Entities\ConnectionRequest.cs" />
+    <Compile Include="Entities\DoctorProfile.cs" />
+    <Compile Include="Entities\PatientProfile.cs" />
+    <Compile Include="LogEntry.cs" />
+    <Compile Include="Messages\ConnectionRequestMessage.cs" />
+    <Compile Include="Messages\DoctorDetailsMessage.cs" />
+    <Compile Include="Messages\DoctorStatusMessage.cs" />
+    <Compile Include="Messages\DoctorSyncMessage.cs" />
+    <Compile Include="Messages\LogEntryMessage.cs" />
+    <Compile Include="Messages\PatientDetailsMessage.cs" />
+    <Compile Include="Messages\ProfileLogAndEntriesMessage.cs" />
+    <Compile Include="Messages\ProfileLogMessage.cs" />
+    <Compile Include="PatientLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\RabbitMQService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
